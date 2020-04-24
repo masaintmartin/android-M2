@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">Memos</string>
+    <string name="submit_text">Valider</string>
+    <string name="cancel_text">Annuler</string>
+    <string name="MemoHint">Memo\'s title</string>
+</resources>
