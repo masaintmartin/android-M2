@@ -9,12 +9,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import com.masaintmartin.memos.Models.Database.MemoDatabase;
 import com.masaintmartin.memos.Models.Memo;
 import com.masaintmartin.memos.R;
-import com.masaintmartin.memos.Utils.Constants;
+import com.masaintmartin.memos.Helpers.Constants;
 
 public class Add_Edit_Memo extends AppCompatActivity {
 
@@ -41,7 +40,7 @@ public class Add_Edit_Memo extends AppCompatActivity {
         Intent intent = getIntent();
 
         // get the extra value
-        int memoId = intent.getIntExtra(Constants.EXTRA_CODE_MEMO_ID, -1);
+        int memoId = intent.getIntExtra(Constants.UPDATE_ID, -1);
         position = intent.getIntExtra(Constants.UPDATE_POSITION, -1);
         if(memoId != -1 && position != -1) {
             this.memo = MemoDatabase.getInstance(this).memoDao().getMemo(memoId);
@@ -77,6 +76,7 @@ public class Add_Edit_Memo extends AppCompatActivity {
                 if(isCreation) MemoDatabase.getInstance(context).memoDao().insertMemo(memo);
                 else {
                     MemoDatabase.getInstance(context).memoDao().updateMemo(memo);
+                    intent.putExtra(Constants.UPDATE_ID, memo.getId());
                     intent.putExtra(Constants.UPDATE_POSITION, position);
                 }
 

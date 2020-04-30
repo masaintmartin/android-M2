@@ -9,19 +9,20 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Toast;
 
-import com.masaintmartin.memos.Adapters.MemosAdapter;
+import com.masaintmartin.memos.Helpers.UI.Adapters.MemosAdapter;
 import com.masaintmartin.memos.Controllers.Memos.Add_Edit_Memo;
-import com.masaintmartin.memos.ItemTouchHelper.MemosItemTouchHelperCallback;
+import com.masaintmartin.memos.Helpers.UI.ItemTouchHelper.MemosItemTouchHelperCallback;
 import com.masaintmartin.memos.Models.Database.MemoDatabase;
 import com.masaintmartin.memos.Models.Memo;
 import com.masaintmartin.memos.R;
-import com.masaintmartin.memos.Utils.Constants;
+import com.masaintmartin.memos.Helpers.Constants;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -31,17 +32,13 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager memosLayoutManager;
     private ItemTouchHelper itemTouchHelper;
 
-    MemoDatabase database;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        database = MemoDatabase.getInstance(this);
-
         setContentView(R.layout.activity_main);
 
-        List<Memo> memos = database.memoDao().getMemos();
+        List<Memo> memos = MemoDatabase.getInstance(this).memoDao().getMemos();
 
         memosRecyclerView = findViewById(R.id.memosRecyclerView);
         memosRecyclerView.setHasFixedSize(true);
@@ -57,6 +54,13 @@ public class MainActivity extends AppCompatActivity {
         itemTouchHelper.attachToRecyclerView(memosRecyclerView);
 
         super.findViewById(R.id.addMemo).setOnClickListener(StartAddMemo(this));
+
+        SharedPreferences preferences =
+                PreferenceManager.getDefaultSharedPreferences(this);
+        int index = preferences.getInt(Constants.POSITION_MEMO, -1);
+        if(index != -1) {
+            Toast.makeText(this, "Last memo's touched position: " + (index + 1), Toast.LENGTH_SHORT ).show();
+        }
     }
 
     private View.OnClickListener StartAddMemo(final Context context){
@@ -95,7 +99,8 @@ public class MainActivity extends AppCompatActivity {
 
                         if(position != -1 && id != -1){
                             Toast.makeText(getApplicationContext(), "Memo updated", Toast.LENGTH_SHORT).show();
-                            Memo memoUpdated = database.memoDao().getMemo(id);
+
+                             Memo memoUpdated = MemoDatabase.getInstance(getApplicationContext()).memoDao().getMemo(id);
                             if(memoUpdated != null) {
                                 this.memosAdapter.onItemUpdate(memoUpdated, position);
                             }

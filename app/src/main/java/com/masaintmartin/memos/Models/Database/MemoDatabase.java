@@ -37,6 +37,7 @@ public abstract class MemoDatabase extends RoomDatabase {
         return INSTANCE;
     }
 
+    // --- PREFILL DATABASE ON FIRST RUN ---
     private static Callback prepopulateDatabase(){
         return new Callback() {
 
@@ -44,7 +45,7 @@ public abstract class MemoDatabase extends RoomDatabase {
             public void onCreate(@NonNull SupportSQLiteDatabase db) {
                 super.onCreate(db);
 
-                for (int i = 0; i < 30; i++){
+                for (int i = 0; i < 3; i++){
                     ContentValues contentValues = new ContentValues();
                     contentValues.put("id", i);
                     contentValues.put("title", String.format("memo numéro: %s", i+1));

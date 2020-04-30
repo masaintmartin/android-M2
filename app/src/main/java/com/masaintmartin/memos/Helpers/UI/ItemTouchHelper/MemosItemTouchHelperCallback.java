@@ -1,10 +1,10 @@
-package com.masaintmartin.memos.ItemTouchHelper;
+package com.masaintmartin.memos.Helpers.UI.ItemTouchHelper;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.masaintmartin.memos.Adapters.MemosAdapter;
+import com.masaintmartin.memos.Helpers.UI.Adapters.MemosAdapter;
 
 public class MemosItemTouchHelperCallback extends ItemTouchHelper.Callback {
 

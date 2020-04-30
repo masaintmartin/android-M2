@@ -1,12 +1,10 @@
-package com.masaintmartin.memos.Adapters;
+package com.masaintmartin.memos.Helpers.UI.Adapters;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Handler;
-import android.os.Looper;
-import android.provider.ContactsContract;
-import android.util.Log;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,11 +13,13 @@ import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.loopj.android.http.AsyncHttpClient;
 import com.masaintmartin.memos.Controllers.Memos.Add_Edit_Memo;
 import com.masaintmartin.memos.Models.Database.MemoDatabase;
 import com.masaintmartin.memos.Models.Memo;
 import com.masaintmartin.memos.R;
-import com.masaintmartin.memos.Utils.Constants;
+import com.masaintmartin.memos.Helpers.Constants;
+import com.masaintmartin.memos.Services.HttpBin_Service;
 
 import java.util.List;
 
@@ -34,6 +34,7 @@ public class MemosAdapter extends RecyclerView.Adapter<MemosAdapter.MemoItemView
 
         public MemoItemViewHolder(View v) {
             super(v);
+
             this.textView = v.findViewById(R.id.memo_title);
 
             v.setOnClickListener(new View.OnClickListener() {
@@ -41,8 +42,15 @@ public class MemosAdapter extends RecyclerView.Adapter<MemosAdapter.MemoItemView
                 public void onClick(View v) {
                     Toast.makeText(v.getContext(), "Touch Memo", Toast.LENGTH_SHORT).show();
 
+                    HttpBin_Service.Post(v.getContext(), memo);
+
+                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(v.getContext());
+                    SharedPreferences.Editor editor = preferences.edit();
+                    editor.putInt(Constants.POSITION_MEMO, getAdapterPosition());
+                    editor.apply();
+
                     Intent intent = new Intent(v.getContext(), Add_Edit_Memo.class);
-                    intent.putExtra(Constants.EXTRA_CODE_MEMO_ID, memo.getId());
+                    intent.putExtra(Constants.UPDATE_ID, memo.getId());
                     intent.putExtra(Constants.UPDATE_POSITION, getAdapterPosition());
                     ((Activity) v.getContext()).startActivityForResult(intent, Constants.ADD_EDIT_MEMO_REQUEST_CODE);
                 }
